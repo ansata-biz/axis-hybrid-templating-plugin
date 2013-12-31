@@ -50,12 +50,11 @@ class BasicFilesystemLoader implements TemplateLoader
     if (!isset($this->cache['getModuleTemplatePath'][$moduleName][$template]))
     {
       $this->cache['getModuleTemplatePath'][$moduleName][$template] = null;
-      foreach ($this->applicationConfiguration->getTemplateDirs($moduleName) as $dir)
+      if ($dir = $this->getModuleTemplateDir($moduleName, $template))
       {
         if ($path = $this->getTemplatePath($dir.'/'.$template))
         {
           $this->cache['getModuleTemplatePath'][$moduleName][$template] = $path;
-          break;
         }
       }
     }
@@ -75,8 +74,19 @@ class BasicFilesystemLoader implements TemplateLoader
    */
   public function getModuleTemplateDir($moduleName, $template)
   {
-    $path = $this->getModuleTemplatePath($moduleName, $template);
-    return $path ? dirname($path) : null;
+    if (!isset($this->cache['getModuleTemplateDir'][$moduleName][$template]))
+    {
+      $this->cache['getModuleTemplateDir'] = null;
+      foreach ($this->applicationConfiguration->getTemplateDirs($moduleName) as $dir)
+      {
+        if ($path = $this->getTemplatePath($dir.'/'.$template))
+        {
+          $this->cache['getModuleTemplateDir'][$moduleName][$template] = $dir;
+          break;
+        }
+      }
+    }
+    return $this->cache['getModuleTemplateDir'][$moduleName][$template];
   }
 
   /**
