@@ -19,7 +19,7 @@ class PhpTemplatingEngine extends BaseTemplatingEngine
     return true;
   }
 
-  public function render($file, $vars = array())
+  public function render($file, $vars = array(), $namespace = null)
   {
     extract($vars);
 

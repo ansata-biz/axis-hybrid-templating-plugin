@@ -49,7 +49,7 @@ class HybridTemplatingEngine extends BaseTemplatingEngine
    *
    * @throws \InvalidArgumentException If template format is not supported
    */
-  public function render($template, $vars = array())
+  public function render($template, $vars = array(), $namespace = null)
   {
     $ext = pathinfo($template, PATHINFO_EXTENSION);
     if (!isset($this->engines[$ext]))
@@ -69,7 +69,7 @@ class HybridTemplatingEngine extends BaseTemplatingEngine
       $vars = $this->initializeAttributeHolder($vars)->toArray();
     }
 
-    return $engine->render($template, $vars);
+    return $engine->render($template, $vars, $namespace);
   }
 
   /**

@@ -168,7 +168,8 @@ class HybridView extends \sfView
 
     // EXTR_REFS can't be used (see #3595 and #3151)
     $vars = $this->attributeHolder->toArray();
-    return $this->getEngine()->render($_sfFile, $vars);
+
+    return $this->getEngine()->render($_sfFile, $vars, $this->getModuleName());
   }
 
   /**

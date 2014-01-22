@@ -27,12 +27,13 @@ class TwigTemplatingEngine extends BaseTemplatingEngine
    * @param array $vars
    * @return string
    */
-  public function render($template, $vars = array())
+  public function render($template, $vars = array(), $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE)
   {
     /** @var $loader \Twig_Loader_Filesystem */
     $loader = $this->twig->getLoader();
-    $loader->addPath(realpath(dirname($template)));
-    return $this->twig->render(basename($template), $vars);
+    $loader->addPath(realpath(dirname($template)), $namespace);
+
+    return $this->twig->render('@' . $namespace . '/' . basename($template), $vars);
   }
 
   public function isEscapingNeeded()

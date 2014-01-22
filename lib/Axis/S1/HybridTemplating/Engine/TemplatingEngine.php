@@ -24,5 +24,5 @@ interface TemplatingEngine
    * @param array $vars
    * @return string
    */
-  public function render($template, $vars = array());
+  public function render($template, $vars = array(), $namespace = null);
 }
