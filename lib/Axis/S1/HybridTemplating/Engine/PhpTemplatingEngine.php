@@ -19,7 +19,7 @@ class PhpTemplatingEngine extends BaseTemplatingEngine
     return true;
   }
 
-  public function render($file, $vars = array(), $namespace = null)
+  public function render($_sfFile, $vars = array(), $namespace = null)
   {
     extract($vars);
 
@@ -29,7 +29,7 @@ class PhpTemplatingEngine extends BaseTemplatingEngine
 
     try
     {
-      require($file);
+      require($_sfFile);
     }
     catch (\Exception $e)
     {
