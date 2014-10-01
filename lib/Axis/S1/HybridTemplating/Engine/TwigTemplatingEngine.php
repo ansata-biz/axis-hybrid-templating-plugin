@@ -31,7 +31,13 @@ class TwigTemplatingEngine extends BaseTemplatingEngine
   {
     /** @var $loader \Twig_Loader_Filesystem */
     $loader = $this->twig->getLoader();
-    $loader->addPath(realpath(dirname($template)), $namespace);
+    $paths = $this->twig->getLoader()->getPaths($namespace);
+    $templateDir = realpath(dirname($template));
+    if (!in_array($templateDir, $paths))
+    {
+      array_unshift($paths, $templateDir);
+    }
+    $loader->setPaths($paths, $namespace);
 
     return $this->twig->render('@' . $namespace . '/' . basename($template), $vars);
   }
