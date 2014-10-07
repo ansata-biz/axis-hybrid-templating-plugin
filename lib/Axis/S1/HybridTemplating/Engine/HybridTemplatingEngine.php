@@ -6,7 +6,7 @@
  */
 namespace Axis\S1\HybridTemplating\Engine;
 
-use Axis\S1\HybridTemplating\Engine\TemplatingEngine;
+use Axis\S1\HybridTemplating\Loader\BasicFilesystemLoader;
 
 class HybridTemplatingEngine extends BaseTemplatingEngine
 {
@@ -26,15 +26,24 @@ class HybridTemplatingEngine extends BaseTemplatingEngine
   protected $dispatcher;
 
   /**
-   * @param array|TemplatingEngine[] $engines
+   * @var BasicFilesystemLoader
    */
-  public function __construct($engines = array(), $dispatcher)
+  protected $loader;
+
+  /**
+   * @param array|TemplatingEngine[] $engines
+   * @param BasicFilesystemLoader $loader
+   * @param \sfEventDispatcher $dispatcher
+   */
+  public function __construct($engines = array(), $loader, $dispatcher)
   {
     foreach ($engines as $engine)
     {
       $this->engines[$engine->getExtension()] = $engine;
     }
     $this->dispatcher = $dispatcher;
+    $this->loader = $loader;
+
   }
 
   public function isEscapingNeeded()
@@ -44,14 +53,16 @@ class HybridTemplatingEngine extends BaseTemplatingEngine
 
   /**
    * @param string $template
+   * @param string $module
    * @param array $vars
    * @return string
    *
    * @throws \InvalidArgumentException If template format is not supported
    */
-  public function render($template, $vars = array(), $namespace = null)
+  public function render($module, $template, $vars = array())
   {
-    $ext = pathinfo($template, PATHINFO_EXTENSION);
+    $path = $this->loader->getTemplatePath($module, $template);
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
     if (!isset($this->engines[$ext]))
     {
       throw new \InvalidArgumentException(sprintf(
@@ -69,7 +80,7 @@ class HybridTemplatingEngine extends BaseTemplatingEngine
       $vars = $this->initializeAttributeHolder($vars)->toArray();
     }
 
-    return $engine->render($template, $vars, $namespace);
+    return $engine->render($module, $template, $vars);
   }
 
   /**

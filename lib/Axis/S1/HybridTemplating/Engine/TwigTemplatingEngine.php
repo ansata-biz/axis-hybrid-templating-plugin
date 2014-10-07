@@ -23,17 +23,14 @@ class TwigTemplatingEngine extends BaseTemplatingEngine
   }
 
   /**
+   * @param string $module
    * @param string $template
    * @param array $vars
    * @return string
    */
-  public function render($template, $vars = array(), $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE)
+  public function render($module, $template, $vars = array())
   {
-    /** @var $loader \Twig_Loader_Filesystem */
-    $loader = $this->twig->getLoader();
-    $loader->addPath(realpath(dirname($template)), $namespace);
-
-    return $this->twig->render('@' . $namespace . '/' . basename($template), $vars);
+    return $this->twig->render('@' . $module . '/' . $template . '.' . $this->getExtension(), $vars);
   }
 
   public function isEscapingNeeded()

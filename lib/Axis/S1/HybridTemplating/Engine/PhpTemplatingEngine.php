@@ -7,9 +7,25 @@
 
 namespace Axis\S1\HybridTemplating\Engine;
 
+use Axis\S1\HybridTemplating\Loader\BasicFilesystemLoader;
+
 class PhpTemplatingEngine extends BaseTemplatingEngine
 {
   protected $extension = 'php';
+  /** @var BasicFilesystemLoader $loader */
+  protected $loader;
+  /** @var \sfContext $context */
+  protected $context;
+
+  function __construct($context)
+  {
+    $this->context = $context;
+  }
+
+  private function getLoader()
+  {
+    return $this->loader ?: $this->loader = $this->context->get('hybrid_templating.loader');
+  }
 
   /**
    * @return bool
@@ -19,7 +35,15 @@ class PhpTemplatingEngine extends BaseTemplatingEngine
     return true;
   }
 
-  public function render($_sfFile, $vars = array(), $namespace = null)
+  public function render($module, $template, $vars = array())
+  {
+    /** @var BasicFilesystemLoader $loader */
+    $loader = $this->getLoader();
+
+    return $this->renderFile($loader->getTemplatePath($module, $template), $vars);
+  }
+
+  protected function renderFile($_sfFile, $vars = array())
   {
     extract($vars);
 

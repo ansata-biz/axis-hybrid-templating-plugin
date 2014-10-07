@@ -76,12 +76,16 @@ interface TemplateLoader
    * for each templating engine in order of priority
    * and returns first matched path
    *
-   * Example:
-   * getTemplatePath('/path/to/project/apps/frontend/templates')
-   *  = '/path/to/project/apps/frontend/templates.twig'
+   * Examples:
+   * getTemplatePath('global','templates')
+   *  = '/path/to/project/apps/frontend/templates/templates.twig'
    *
+   * getTemplatePath('location','index')
+   *  = '/path/to/project/apps/frontend/modules/location/templates/index.php'
+   *
+   * @param string $module Module name ('global' for decorators)
    * @param string $template Template path without engine extension
    * @return string
    */
-  public function getTemplatePath($template);
+  public function getTemplatePath($module, $template);
 }

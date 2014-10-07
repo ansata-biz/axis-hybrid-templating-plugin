@@ -20,9 +20,10 @@ interface TemplatingEngine
   public function isEscapingNeeded();
 
   /**
+   * @param string $module
    * @param string $template
    * @param array $vars
    * @return string
    */
-  public function render($template, $vars = array(), $namespace = null);
+  public function render($module, $template, $vars = array());
 }

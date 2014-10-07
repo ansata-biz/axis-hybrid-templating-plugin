@@ -137,8 +137,7 @@ class HybridView extends \sfView
       $this->attributeHolder->set('sf_type', 'action');
 
       // render template file
-      $templateFile = $this->loader->getTemplatePath($this->getDirectory().'/'.$this->getTemplate());
-      $content = $this->renderFile($templateFile);
+      $content = $this->renderTemplate($this->getModuleName(), $this->getTemplate(), $this->templateFile);
 
       /** @var $viewCache \sfViewCacheManager */
       /** @var $uri string */
@@ -157,7 +156,7 @@ class HybridView extends \sfView
     return $content;
   }
 
-  protected function renderFile($_sfFile)
+  protected function renderTemplate($module, $template, $_sfFile)
   {
     if (\sfConfig::get('sf_logging_enabled'))
     {
@@ -169,7 +168,7 @@ class HybridView extends \sfView
     // EXTR_REFS can't be used (see #3595 and #3151)
     $vars = $this->attributeHolder->toArray();
 
-    return $this->getEngine()->render($_sfFile, $vars, $this->getModuleName());
+    return $this->getEngine()->render($module, $template, $vars);
   }
 
   /**
@@ -200,8 +199,7 @@ class HybridView extends \sfView
     }
 
     // render the decorator template and return the result
-    $templateFile = $this->loader->getTemplatePath($this->getDecoratorDirectory().'/'.$this->getDecoratorTemplate());
-    $ret = $this->renderFile($templateFile);
+    $ret = $this->renderTemplate('global', $this->getDecoratorTemplate(), $this->templateFile);
 
     $this->attributeHolder = $attributeHolder;
 
@@ -220,15 +218,16 @@ class HybridView extends \sfView
   {
     if (\sfToolkit::isPathAbsolute($template))
     {
+      $this->templateFile = $template;
       $this->directory = dirname($template);
       $this->template  = basename($template);
     }
     else
     {
-      $this->directory = $this->loader->getModuleTemplateDir($this->moduleName, $template);
+      $this->templateFile = $this->loader->getTemplatePath($this->moduleName, $template);
+      $this->directory = $this->loader->getTemplateDir($this->moduleName, $template);
       $this->template = $template;
     }
-    $this->templateFile = $this->loader->getTemplatePath($this->directory . '/' . $this->template);
   }
 
   /**

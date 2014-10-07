@@ -10,12 +10,15 @@ all:
     class: \Axis\S1\HybridTemplating\Engine\HybridTemplatingEngine
     parameters:
       engines: tag://hybrid_templating.engine
+      loader: @hybrid_templating.loader
       dispatcher: context://dispatcher
 
   hybrid_templating.engine.php:
     class: \Axis\S1\HybridTemplating\Engine\PhpTemplatingEngine
     tag: hybrid_templating.engine
-
+    parameters:
+      context: @context
+#
 #  # Enable this service in your project's factories.yml to use Twig templates
 #  hybrid_templating.engine.twig:
 #    class: \Axis\S1\HybridTemplating\Engine\TwigTemplatingEngine

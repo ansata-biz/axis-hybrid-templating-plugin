@@ -55,14 +55,6 @@ class HybridPartialView extends HybridView
 
     $this->setDecorator(false);
     $this->setTemplate($this->actionName);
-    if ('global' == $this->moduleName)
-    {
-      $this->setDirectory($this->loader->getDecoratorDir($this->getTemplate()));
-    }
-    else
-    {
-      $this->setDirectory($this->loader->getModuleTemplateDir($this->moduleName, $this->getTemplate()));
-    }
   }
 
   /**
@@ -115,9 +107,8 @@ class HybridPartialView extends HybridView
 
       $this->getAttributeHolder()->set('sf_type', 'partial');
 
-      // render template
-      $templateFile = $this->loader->getTemplatePath($this->getDirectory().'/'.$this->getTemplate());
-      $retval = $this->renderFile($templateFile);
+      // render template;
+      $retval = $this->renderTemplate($this->getModuleName(), $this->getTemplate(), $this->templateFile);
     }
     catch (\Exception $e)
     {

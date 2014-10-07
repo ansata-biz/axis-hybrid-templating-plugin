@@ -52,7 +52,7 @@ class BasicFilesystemLoader implements TemplateLoader
       $this->cache['getModuleTemplatePath'][$moduleName][$template] = null;
       if ($dir = $this->getModuleTemplateDir($moduleName, $template))
       {
-        if ($path = $this->getTemplatePath($dir.'/'.$template))
+        if ($path = $this->matchTemplateExtension($dir.'/'.$template))
         {
           $this->cache['getModuleTemplatePath'][$moduleName][$template] = $path;
         }
@@ -62,7 +62,61 @@ class BasicFilesystemLoader implements TemplateLoader
   }
 
   /**
-   * Returns full file directory path by $moduleName and $template
+   * Returns full file path by $moduleName and $template
+   * ($moduleName == 'global' for decorators)
+   *
+   * Examples:
+   * getTemplatePath('homepage', 'indexSuccess')
+   *  = /path/to/project/apps/frontend/modules/homepage/templates/indexSuccess.php
+   *
+   * getTemplatePath('global', 'layout')
+   *  = /path/to/project/apps/frontend/templates/layout.twig
+   *
+   * @param string $moduleName Module name
+   * @param string $template Template name
+   * @return string
+   */
+  public function getTemplatePath($moduleName, $template)
+  {
+    if ($moduleName == 'global')
+    {
+      return $this->getDecoratorPath($template);
+    }
+    else
+    {
+      return $this->getModuleTemplatePath($moduleName, $template);
+    }
+  }
+
+  /**
+   * Returns template directory path by $moduleName and $template
+   * ($moduleName == 'global' for decorators)
+   *
+   * Examples:
+   * getTemplatePath('homepage', 'indexSuccess')
+   *  = /path/to/project/apps/frontend/modules/homepage/templates/
+   *
+   * getTemplatePath('global', 'layout')
+   *  = /path/to/project/apps/frontend/templates/
+   *
+   * @param string $moduleName Module name
+   * @param string $template Template name
+   * @return string
+   */
+  public function getTemplateDir($moduleName, $template)
+  {
+    if ($moduleName == 'global')
+    {
+      return $this->getDecoratorDir($template);
+    }
+    else
+    {
+      return $this->getModuleTemplateDir($moduleName, $template);
+    }
+  }
+
+  /**
+   * Returns template directory full path by $moduleName and $template
    *
    * Example:
    * getModuleTemplateDir('homepage', 'indexSuccess')
@@ -79,7 +133,7 @@ class BasicFilesystemLoader implements TemplateLoader
       $this->cache['getModuleTemplateDir'] = null;
       foreach ($this->applicationConfiguration->getTemplateDirs($moduleName) as $dir)
       {
-        if ($path = $this->getTemplatePath($dir.'/'.$template))
+        if ($path = $this->matchTemplateExtension($dir.'/'.$template))
         {
           $this->cache['getModuleTemplateDir'][$moduleName][$template] = $dir;
           break;
@@ -106,7 +160,7 @@ class BasicFilesystemLoader implements TemplateLoader
       $this->cache['getDecoratorPath'][$template] = null;
       foreach ($this->applicationConfiguration->getDecoratorDirs() as $dir)
       {
-        if ($path = $this->getTemplatePath($dir.'/'.$template))
+        if ($path = $this->matchTemplateExtension($dir.'/'.$template))
         {
           $this->cache['getDecoratorPath'][$template] = $path;
           break;
@@ -144,7 +198,7 @@ class BasicFilesystemLoader implements TemplateLoader
    * @param string $template Template path without engine extension
    * @return string
    */
-  public function getTemplatePath($template)
+  protected function matchTemplateExtension($template)
   {
     if (!isset($this->cache['getTemplatePath'][$template]))
     {
@@ -173,7 +227,7 @@ class BasicFilesystemLoader implements TemplateLoader
    */
   public function templateExists($template)
   {
-    return $this->getTemplatePath($template) !== null;
+    return $this->matchTemplateExtension($template) !== null;
   }
 
   /**

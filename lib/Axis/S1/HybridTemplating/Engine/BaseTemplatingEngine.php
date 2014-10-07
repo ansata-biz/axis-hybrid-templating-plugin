@@ -47,9 +47,10 @@ abstract class BaseTemplatingEngine implements TemplatingEngine
   }
 
   /**
+   * @param string $module
    * @param string $template
    * @param array $vars
    * @return string
    */
-  abstract public function render($template, $vars = array(), $namespace = null);
+  abstract public function render($module, $template, $vars = array());
 }
